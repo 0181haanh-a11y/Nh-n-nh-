@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clover here, Sweetie</title>
+
+<style>
+body{
+    margin:0;
+    padding:40px;
+    background-image: url("background4.png");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    font-family: Arial, sans-serif;
+}
+
+/* GRID - 8 ô mỗi hàng */
+.grid{
+    display:grid;
+    grid-template-columns: repeat(8, 130px);
+    gap:25px;
+    margin-top:80px;
+    margin-bottom:60px;
+}
+
+/* Ô chưa mở */
+.box{
+    width:130px;
+    height:130px;
+    background:#3b1f12;
+    border-radius:25px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    color:white;
+    font-size:14px;
+    padding:10px;
+    box-sizing:border-box;
+    cursor:not-allowed;
+    transition:0.3s;
+}
+
+/* Ô đã mở */
+.unlocked{
+    background:white;
+    color:#3b1f12;
+    cursor:pointer;
+}
+
+.unlocked:hover{
+    transform:scale(1.05);
+}
+
+/* POPUP */
+.overlay{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.4);
+    display:none;
+    align-items:center;
+    justify-content:center;
+}
+
+.message-frame{
+    background:white;
+    width:520px;
+    padding:40px;
+    border-radius:40px;
+    position:relative;
+    text-align:center;
+    font-size:18px;
+    line-height:1.7;
+    color:#3b1f12;
+    white-space:pre-line;
+}
+
+.message-frame:before{
+    content:"";
+    position:absolute;
+    top:-20px; bottom:-20px;
+    left:-20px; right:-20px;
+    border-radius:60px;
+    background:#a8dcd4;
+    z-index:-1;
+}
+
+.close-btn{
+    margin-top:25px;
+    padding:10px 20px;
+    border:none;
+    background:#3b1f12;
+    color:white;
+    border-radius:20px;
+    cursor:pointer;
+}
+
+/* Footer */
+.footer-text{
+    max-width:1200px;
+    color:#3b1f12;
+    text-align:center;
+    line-height:1.8;
+    font-size:16px;
+}
+</style>
+</head>
+<body>
+
+<div class="grid" id="grid"></div>
+
+<div class="overlay" id="overlay">
+    <div class="message-frame">
+        <div id="messageContent"></div>
+        <button class="close-btn" onclick="closeMessage()">Đóng</button>
+    </div>
+</div>
+
+<div class="footer-text">
+Ghé qua đây nếu cậu thấy không ổn hoặc nghĩ đến tớ nhé.
+Mỗi đầu tuần sẽ có một vài lời tớ muốn gửi đến cậu.
+Những điều được ghi trong mỗi ô đều được tớ viết trước ngày 01/03/2026,
+nên những cảm xúc và suy nghĩ sẽ chỉ dừng lại ở thời điểm đó thôi.
+Cậu sẽ không thể đọc trước các thông điệp khi chưa đến ngày đâu.
+Hi vọng cậu sẽ cảm thấy tốt hơn, vui vẻ hơn và có thêm động lực vào mỗi đầu tuần.
+</div>
+
+<script>
+
+/* BẮT ĐẦU NGÀY 09/03/2026 00:00 */
+const startDate = new Date(2026, 2, 9, 0, 0, 0);
+// tháng 2 = tháng 3
+
+const messages = [
+`Tuần vừa qua cậu có hạnh phúc chứ?
+Tớ đã muốn rủ cậu đi xem phim “Thỏ ơi”, nhưng chắc cậu cũng đi xem với bạn bè rồi nên thôi. Tớ cũng đã xem rồi và bộ phim đó thực sự khiến tớ phải suy nghĩ nhiều.
+Biết vì sao tớ block cậu không?
+Và tớ vẫn nghĩ rằng chúng ta không thể làm bạn.
+Thật ra tớ đã tính tặng cậu chiếc vòng tay charm có thể tự thiết kế, nhưng nghĩ lại thì đây không phải lúc thích hợp để tặng cậu món quà như vậy.`,
+
+`Chắc cậu đã quên rồi, nhưng hôm hội trại ấy, trong đêm văn nghệ, lúc pháo hoa vừa tàn, có một khoảnh khắc khi chạm mắt với cậu, tớ đã thực sự nhận ra nhiều điều (một ngày nào đó cậu sẽ biết).
+Và cái chạm mắt đó đã khiến tớ suy suốt 11 ngày nghỉ Tết và đến tận lúc viết những dòng này.`,
+
+`Tuần này sẽ khá đặc biệt, nhưng tớ sẽ không hi vọng nhận được điều gì đó.
+Tớ không muốn chỉ vì tớ “đối xử tốt” với cậu mà cậu “đối xử tốt” lại với tớ.
+Hình như sắp thi giữa kì đúng không nhỉ? Ôn tập kĩ nha.
+Một tuần vui vẻ nhé.`,
+
+`Đừng thắc mắc vì sao những câu từ trong đây lại nhẹ nhàng như vậy.
+Tính tớ bây giờ thất thường lắm, mới giây trước còn vui vẻ, giây sau có thể tức giận rồi.
+Cũng may lúc viết dòng này, tớ đang khá thoải mái và không nghĩ ngợi nhiều.`,
+
+`Chắc lúc này đang ôn thi cuối kì và THPTQG rồi ha. Đây bắt đầu là giai đoạn gấp rút rồi.
+Lúc tớ viết những dòng này, tớ vẫn chưa ôn tập gì nhiều, mất gốc quá trời.
+Mong rằng đến ngày này, tớ của tương lai đã lấy lại được hết căn bản rồi.`,
+
+`Cậu biết vì sao chúng ta không thể làm bạn không?
+Tớ của lúc này đang buồn nhiều lắm đó…`,
+
+`Khi thi THPTQG xong, cậu có dự định làm gì hay đi đâu chưa?
+Nếu có cơ hội, tớ mong cậu kí lưu bút cho tớ.`,
+
+`Lỡ lúc này cậu có người yêu rồi thì sao…
+Nói trước là nếu có người yêu rồi thì đừng vào web này nữa đó.
+Cậu cũng đâu phải kiểu người ít rung động.`,
+
+`Ôn thi đến đâu rồi?
+Còn vài chục ngày nữa là thi rồi đó.
+Cậu có bị áp lực hay căng thẳng gì không?
+Chắc lúc này đã thi xong cuối kì rồi nhỉ?`,
+
+`Ước mơ của cậu là gì?
+Cậu đã nghĩ ra chưa?`,
+
+`Chắc trong giai đoạn này ai cũng bận rộn hết ha.
+Nếu được hỏi tớ một điều gì đó, cậu có muốn hỏi gì không?
+Chắc là không đâu ha.`,
+
+`Khi thi xong, tớ có nhiều chuyện muốn làm và muốn giải quyết lắm.
+Có một số điều tớ vẫn còn tiếc nuối, có nhiều điều tớ muốn hỏi cậu cho rõ,
+và cũng muốn nói rõ với cậu.`,
+
+`Cậu có tham gia mấy bài thi thử không?
+Chắc trong giai đoạn này cậu đang suy nghĩ nhiều nhỉ.`,
+
+`Chắc tuần này đang thi THPTQG rồi ha.
+Nhớ ôn tập kĩ và giữ gìn sức khoẻ đó. 🍀🍀🍀`,
+
+`Thi xong rồi nhỉ, ổn chứ?
+Tuần này cậu hãy nghỉ ngơi nha.
+Nếu có buồn thì cứ làm điều mình thích để giải toả.
+Biết đâu tuần tiếp theo sẽ có một bất ngờ nhỏ.
+Tớ lo lắng quá, không biết mình thi ra sao nữa…
+Cậu có muốn follow Instagram nhau không?`,
+
+`Đây là note cuối cùng rồi.
+Nếu được thì gặp nhau ngày 28/6 nhé?
+Liên lạc với tớ nếu cậu đồng ý nha.`
+];
+
+const grid = document.getElementById("grid");
+
+messages.forEach((msg, index) => {
+
+    const box = document.createElement("div");
+    box.classList.add("box");
+
+    const unlockDate = new Date(startDate);
+    unlockDate.setDate(startDate.getDate() + index * 7);
+
+    box.innerText = unlockDate.toLocaleDateString("vi-VN");
+
+    const now = new Date();
+
+    if(now >= unlockDate){
+        box.classList.add("unlocked");
+        box.addEventListener("click", () => {
+            document.getElementById("messageContent").innerText = msg;
+            document.getElementById("overlay").style.display = "flex";
+        });
+    }
+
+    grid.appendChild(box);
+});
+
+function closeMessage(){
+    document.getElementById("overlay").style.display = "none";
+}
+
+</script>
+
+</body>
+</html>
